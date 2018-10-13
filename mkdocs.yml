@@ -1,1 +1,6 @@
 site_name: MOCOCJ
+
+nav:
+  - Home: index.md
+  - Chrome Resources: assignment0.md
+  - Conceptual Architecture: assignment1.md
