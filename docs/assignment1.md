@@ -1,4 +1,4 @@
-# Chromium Architecture Report
+# Chromium Conceptual Architecture Report
 ---
 
 ## Abstract
@@ -22,14 +22,14 @@ Even of the four S’s, security, simplicity, speed, and stability, Google put a
 Our group began the derivation process by first taking a look at a generic reference architecture for web browsers. Just through this reference architecture, we were able to derive a basic structure for the Chromium web browser as research showed that Chrome used a very similar conceptual architecture. However, at this point in our derivation, we were still missing the specific subsystems that the Chromium web browser used. Thus, we continued to look for what kind of tools Chromium used for its major subsystems. Major subsystems include JavaScript Interpreter, XML parser, rendering engine, and display backend. Further research showed that the Chromium web browser used  V8 for its JavaScript interpreter, libxml2 for its XML parser, Blink for its rendering engine, and Skia/GDI views for its display backend. Most of this information was found through digging through different articles about the web browser as well as the official Chromium project documentation. With this newly found information about Chromium specific subsystems, we were able to further develop our very basic conceptual architecture. We began to add more detail to our initial architecture, but most of the large components and the architecture style itself remained the same.
 
 *The Reference Architecture for Web Browsers*  
-![ReferenceArchitecture](img/refarch.jpg)
+![ReferenceArchitecture](img/a1/refarch.jpg)
 
 ## Architecture Overview
 
 The conceptual architecture of Chromium derived from the web browser reference architecture is almost exactly the same. As with the reference architecture, we have the layered style that characterizes most, if not all, web browsers, which provides it with the functionality it needs as a web browser. As with the layers in most web browsers, at the highest level abstraction is the User Interface. The next layer contains the Browser, which is followed by the third layer containing the renderer. As a layered architecture, Chromium is able to take advantage of the limited effect an implementation change has on the entire system. If we consider strictly the layered components, should the implementation of the Browser component change, only the effects would only be felt by the User Interface and Rendering Engine which has dependencies on it.
 
 *Figure 1*
-![figure1](img/fig1.png)  
+![figure1](img/a1/fig1.png)  
 
 Also similar to the reference architecture is that one can say that it is an object-oriented architecture. Chromium's object-oriented characteristics give it the advantage of being able to hide the implementation details of each component from other components. There are two effects to this, the first being that because data from one component is hidden from another, security of the data is increased. The second effect is that because implementation details are hidden between each component, one is able to change the implementation of one without changing the function of others. For example, should the implementation of Blink change, the V8 interpreter and Expat parser would still properly function; nothing within those components would break.
 
@@ -42,7 +42,7 @@ The conceptual architecture differed from the reference in the interactions betw
 The User Interface (UI) is the layout of the Chromium browser. It is what the user is able to see and how users are able to interact with Chromium’s functionality. The UI in Chromium is separated into two sections, the content area and the non content area. The content area is where actual content rendered by the rendering engine is displayed. This primarily displays the various web pages that a user will typically see when using Chromium. It primarily relies on output from the rendering engine via the browser. The non-content area refers to the rest of Chromium’s UI, which includes things such as Chromium’s windows, widgets, etc. This area of the UI primarily depends on Skia for the various graphics and text renderings, views to enable Chromium’s customized UI, and GDI and Windows API for a more native look.
 
 *Figure 2*  
-![figure2](img/ui.png)
+![figure2](img/a1/ui.png)
 
 ### Display Backend
 
@@ -71,7 +71,7 @@ The Blink rendering engine is an in-house rendering engine by the Chromium team.
 What distinguishes Blink from other rendering engines is its integration in Chromium’s multi-process architecture. This architecture is essential to how Blink works and interacts with other components. Chromium will have one Browser for the session with many sandboxed rendering processes, usually one renderer instance per tab. This means that if a web page for one tab fails, it would only affect that single tab rather than crash the entire browser. A sandboxed rendering process simply means that access to data in other parts of Chromium or on the network is restricted, and the rendering must go through the browser process in order to obtain such data. Because each tab is sandboxed, this creates a dependency on the Browser component, as each time Blink requests additional data such as files on the network, and user data (cookies, passwords, etc.), it must go through the Browser.
 
 *Figure 3*  
-![figure3](img/blink.png)
+![figure3](img/a1/blink.png)
 
 In addition, Blink also depends on the various interpreters and parsers that help interpret the code it must use. Displayed in the conceptual architecture in Figure 1 are the V8 JavaScript Interpreter and XML parser Expat. Without these two components, two of the most essential things involved in the rendering process are unavailable: the DOM tree and the JavaScript. 
 
@@ -91,11 +91,11 @@ Libxml2 was written in the C language by the GNOME Projects, which is a large co
 
 ### Successfully saving a password on login
 
-![LoginDiagram](img/pwdiagram.png)
+![LoginDiagram](img/a1/pwdiagram.png)
 
 ### Rendering a web page with JavaScript content
 
-![JSDiagram](img/jsdiagram.png)
+![JSDiagram](img/a1/jsdiagram.png)
 
 ## Team Issues
 
